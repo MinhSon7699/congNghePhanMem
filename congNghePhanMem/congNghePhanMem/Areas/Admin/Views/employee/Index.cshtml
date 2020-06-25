@@ -1,0 +1,66 @@
+﻿@model PagedList.IPagedList<congNghePhanMem.Models.information>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Quản lý nhân viên";
+    Layout = "~/Areas/Admin/Views/Shared/_main.cshtml";
+}
+
+@section header
+{
+    Quản lý nhân viên
+}
+<div class="card shadow mb-4">
+    <div class="form-group">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">@Html.ActionLink("Thêm nhân viên", "Create")</h6>
+</div>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("Index", "Employee", FormMethod.Get))
+        {
+            <div class="tab le-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Birthday</th>
+                            <th>Gender</th>
+                            <th>Salary</th>
+                            <th>Status</th>
+                            <th>IdBlock</th>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row_@item.Id">
+                                <th>@item.name</th>
+                                <th>@item.address</th>
+                                <th>@item.birthDay</th>
+                                <th>@item.gender</th>
+                                <th>@item.salary</th>
+                                <th>@(Convert.ToInt32(item.block) > 0 ? "Active" : "block")</th>
+                                <th>@item.IdWork</th>
+                                <td>
+                                    <a href="/Admin/employee/Edit/@item.Id">Sửa</a> |
+                                    @Ajax.ActionLink("Xóa", "Delete", new { @id = item.Id }, new AjaxOptions
+                               {
+                                   Confirm = "Bạn có chắc muốn xóa bản ghi này ?",
+                                   OnComplete = "$('#row_" + @item.Id + "').remove()",
+                                   HttpMethod = "Delete"
+                               })
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+                @Html.PagedListPager(Model, page => Url.Action("", "Index", new { page }))
+            </div>
+        }
+
+    </div>
+</div>
+</div>
